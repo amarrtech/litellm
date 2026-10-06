@@ -54,6 +54,19 @@ def test_apply_fallback_hidden_params_copies_from_fallback_response():
     }
 
 
+def test_apply_fallback_hidden_params_preserves_stream_chunk_response_cost():
+    class FakeChunk:
+        _hidden_params = {"response_cost": None}
+
+    chunk = FakeChunk()
+    Router._apply_fallback_hidden_params_to_item(
+        chunk,
+        ({"response_cost": 0.0}, {}),
+    )
+
+    assert chunk._hidden_params["response_cost"] is None
+
+
 def _two_group_fallback_router() -> Router:
     return litellm.Router(
         model_list=[
